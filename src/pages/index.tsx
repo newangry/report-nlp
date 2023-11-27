@@ -218,8 +218,8 @@ const Index = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            answers.map((item) =>
-                                                <tr>
+                                            answers.map((item, key) =>
+                                                <tr key={key}>
                                                     <td width={'50%'}>{item.query}</td>
                                                     <td width={'50%'}>
                                                         <ChatMessage
