@@ -116,6 +116,9 @@ const Index = () => {
                         data.push(item);
                     }
                 })
+                let _answers = JSON.parse(JSON.stringify(answers));
+                _answers = _answers.concat(data);
+                setAnswers(_answers);
             } 
         }
         setAnswers(data);
