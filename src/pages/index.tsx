@@ -1,5 +1,5 @@
 import { getBrands } from "@/utils/app/global";
-import { Box, Button, Flex, Grid, List, Loader, Table, Text, TextInput, Textarea, ThemeIcon, rem } from "@mantine/core";
+import { Box, Button, Flex, Grid, List, Loader, Table, Text, TextInput, Textarea, ThemeIcon, rem, Image } from "@mantine/core";
 import { useUser } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -9,7 +9,7 @@ import { getFilecontent } from "@/utils/app/train";
 import { useChat } from "ai/react";
 import ChatMessage from "@/components/Playground/ChatMessage";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import Image from "next/image";
+
 const Index = () => {
     const [isTrain, setIsTrain] = useState<boolean>(false);
     const [query, setQuery] = useState<string>('');
@@ -150,7 +150,12 @@ const Index = () => {
             <Flex justify={'space-between'} align={'center'} p={15} sx={(theme) => ({
                 borderBottom: `1px solid #dbd7d7`
             })}>
-                <Image src='' alt="" />
+                <Flex align={'center'}>
+                    <Image src='/logo.jpg' alt="" width={200}/>
+                    <Text size={25}>
+                        ESIA Reports Automatic Assessment Solution
+                    </Text>
+                </Flex>
                 <LanguageSwitcher />
             </Flex>
             <Grid gutter={50} p={20}>
