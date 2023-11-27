@@ -99,11 +99,11 @@ const Index = () => {
     const generateAnswer = async () => {
         setLoadingData(true)
         let res = await fetch('/api/playground/get_quries');
+        const data:any = []
         if(res.status == 200) {
             const quires = await res.json();
             for(let k=0; k<quires.length; k+=10){
                 let promises:any = [];
-                const data:any = []
                 for(let j=k; j<k+10; j++) {
                     if(j>=quires.length-1) {
                         break;
@@ -116,11 +116,9 @@ const Index = () => {
                         data.push(item);
                     }
                 })
-                let _answers = JSON.parse(JSON.stringify(answers));
-                _answers = _answers.concat(data);
-                setAnswers(_answers);
             } 
         }
+        setAnswers(data);
         setLoadingData(false)
     }
 
