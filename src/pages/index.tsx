@@ -98,19 +98,51 @@ const Index = () => {
 
     const generateAnswer = async () => {
         setLoadingData(true)
-        const res = await fetch('/api/playground/chat', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-            }),
-        })
-        if (res.status == 200) {
-            const data = await res.json();
-            setAnswers(data);
+        let res = await fetch('/api/playground/get_quries');
+        if(res.status == 200) {
+            const quires = await res.json();
+            for(let k=0; k<quires.length; k+=10){
+                let promises:any = [];
+                for(let j=k; j<k+10; j++) {
+                    if(j>=quires.length-1) {
+                        break;
+                    }
+                    promises.push(getAnswer(quires[j]));
+                }
+                const result = await Promise.all(promises);
+                result.map((item) => {
+                    if(item && item.answer != "") {
+                        let _answers = JSON.parse(JSON.stringify(answers));
+                        _answers.push(item);
+                        setAnswers(_answers);
+                    }
+                })
+            } 
         }
         setLoadingData(false)
+    }
+
+    const getAnswer = async(query: string) => {
+        try {
+            const res = await fetch('/api/playground/chat', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    query
+                }),
+            })
+    
+            if (res.status == 200) {
+                const data = await res.json();
+                return data;
+            } else {
+                return false;
+            }
+        }catch(e){
+            return false;
+        }
     }
 
     return (
@@ -193,13 +225,12 @@ const Index = () => {
                                         </List>
 
                             }
-
                         </Flex>
                     </Flex>
                 </Grid.Col>
                 <Grid.Col md={9} lg={9} sm={12}>
                     {
-                        loadingData ? <Flex align={'center'} justify={'center'}><Loader /></Flex> :
+                        
                             answers.length == 0 ?
                                 <Box>
                                     <Text align="center" size={"xl"}>
@@ -232,6 +263,11 @@ const Index = () => {
                                     </tbody>
                                 </Table>
                     }
+                    <Box mt={'20px'}>
+                        {
+                            loadingData ? <Flex align={'center'} justify={'center'}><Loader /></Flex>:<></>
+                        }
+                    </Box>
                 </Grid.Col>
             </Grid>
         </Box>

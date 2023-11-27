@@ -5,7 +5,7 @@ import { DEFAULT_PROMPT_TEMPLATE, I_DONT_KNOW, SPLIT_TEXT_LENGTH } from '@/utils
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 import { Configuration, OpenAIApi, ResponseTypes } from 'openai-edge'
 import xlsx from 'xlsx';
-import readExcel from 'read-excel-file/node';
+
 
 const config_openai = new Configuration({
     apiKey: process.env.OPENAI_API_KEY_3
@@ -22,39 +22,10 @@ export default async function handler(
     req: any,
     res: any
 ) {
-    const quires:string[] = await loadQueries();
-    quires.push("can you suggest similar international EIA reports for Service Corridors like this report?");
-    let data: any = [];
-    for(let k=0; k<quires.length; k+=5){
-        let promises:any = [];
-        for(let j=k; j<k+5; j++) {
-            if(j>=quires.length-1) {
-                break;
-            }
-            promises.push(getAnswer(quires[j]));
-        }
-        const result = await Promise.all(promises);
-        result.map((item) => {
-            if(item.answer != "") {
-                data.push(item)
-            }
-        })
-    }  
-    res.status(200).json(data);
-}
-
-const loadQueries = async () => {
-    const data = await readExcel('./Checklist.xlsx');
-    const quires: string[] = [];
-    for (let i in data) {
-        for (let j in data[i]) {
-            if(data[i][j]) {
-                quires.push(data[i][j] as string);
-            }
-        }
-    }
-    return quires;
-}
+    const query = req.body.query;
+    const result = getAnswer(query);
+    res.status(200).json(result);
+}   
 
 const getAnswer = async (query: string) => {
     const embedding_data = await createEmbedding(query);
