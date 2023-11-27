@@ -8,6 +8,8 @@ import { IconCircleCheck, IconPdf, IconUpload } from '@tabler/icons-react';
 import { getFilecontent } from "@/utils/app/train";
 import { useChat } from "ai/react";
 import ChatMessage from "@/components/Playground/ChatMessage";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import Image from "next/image";
 const Index = () => {
     const [isTrain, setIsTrain] = useState<boolean>(false);
     const [query, setQuery] = useState<string>('');
@@ -112,8 +114,14 @@ const Index = () => {
     }
 
     return (
-        <Box p={20}>
-            <Grid gutter={50}>
+        <Box >
+            <Flex justify={'space-between'} align={'center'} p={15} sx={(theme) => ({
+                borderBottom: `1px solid #dbd7d7`
+            })}>
+                <Image src='' alt=""/>
+                <LanguageSwitcher />
+            </Flex>
+            <Grid gutter={50} p={20}>
                 <Grid.Col md={3} lg={3} sm={12}>
                     <Flex justify={'center'} gap={40} w={'100%'} direction={'column'}>
                         <Flex direction={'column'} gap={20}>

@@ -51,7 +51,7 @@
     "**/*.tsx",
     "src/pages/pdf.jsx",
     "components/Pages/Settings"
-  ],
+, "public/assets/scripts/lang-config.js", "public/assets/scripts/translation.js"  ],
   "exclude": [
     "node_modules"
   ]
