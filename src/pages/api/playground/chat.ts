@@ -48,7 +48,6 @@ const loadQueries = async () => {
     const quires: string[] = [];
     for (let i in data) {
         for (let j in data[i]) {
-            // console.log()
             if(data[i][j]) {
                 quires.push(data[i][j] as string);
             }

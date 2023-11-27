@@ -106,7 +106,7 @@ const Index = () => {
             body: JSON.stringify({
             }),
         })
-        if(res.status == 200) {
+        if (res.status == 200) {
             const data = await res.json();
             setAnswers(data);
         }
@@ -118,7 +118,7 @@ const Index = () => {
             <Flex justify={'space-between'} align={'center'} p={15} sx={(theme) => ({
                 borderBottom: `1px solid #dbd7d7`
             })}>
-                <Image src='' alt=""/>
+                <Image src='' alt="" />
                 <LanguageSwitcher />
             </Flex>
             <Grid gutter={50} p={20}>
@@ -159,11 +159,11 @@ const Index = () => {
                                     </Text>
                                 </Flex>
                             </Dropzone>
-                            <Button color="green" 
-                            disabled={loadingData}
-                            onClick={() => {
-                                generateAnswer()
-                            }}>
+                            <Button color="green"
+                                disabled={loadingData}
+                                onClick={() => {
+                                    generateAnswer()
+                                }}>
                                 Generate Answer!
                             </Button>
                         </Flex>
@@ -199,34 +199,38 @@ const Index = () => {
                 </Grid.Col>
                 <Grid.Col md={9} lg={9} sm={12}>
                     {
-                        loadingData?<Flex align={'center'} justify={'center'}><Loader /></Flex>:
-                        answers.length == 0 ?
-                            <Box>
-                                <Text align="center" size={"xl"}>
-                                    No generated Answer
-                                </Text>
-                                <Text align="center" size={'sm'} color="green">
-                                    {`Please click "Generate Answer!" button`}
-                                </Text>
-                            </Box> :
-                            <Table>
-                                <thead>
-                                    <tr>
-                                        <th>Question</th>
-                                        <th>Answer</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        answers.map((item) => 
-                                            <tr>
-                                                <td width={'50%'}>{item.query}</td>
-                                                <td width={'50%'}>{item.answer}</td>
-                                            </tr>
-                                        )
-                                    }
-                                </tbody>
-                            </Table>
+                        loadingData ? <Flex align={'center'} justify={'center'}><Loader /></Flex> :
+                            answers.length == 0 ?
+                                <Box>
+                                    <Text align="center" size={"xl"}>
+                                        No generated Answer
+                                    </Text>
+                                    <Text align="center" size={'sm'} color="green">
+                                        {`Please click "Generate Answer!" button`}
+                                    </Text>
+                                </Box> :
+                                <Table>
+                                    <thead>
+                                        <tr>
+                                            <th>Question</th>
+                                            <th>Answer</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            answers.map((item) =>
+                                                <tr>
+                                                    <td width={'50%'}>{item.query}</td>
+                                                    <td width={'50%'}>
+                                                        <ChatMessage
+                                                            message={item.answer}
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            )
+                                        }
+                                    </tbody>
+                                </Table>
                     }
                 </Grid.Col>
             </Grid>

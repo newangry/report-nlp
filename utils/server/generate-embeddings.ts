@@ -13,7 +13,7 @@ export const createEmbedding = async(
             method: 'POST',
                 body: JSON.stringify({
                 model: EMBEDDING_MODEL,
-                input: input.trim().replaceAll('\n', ' '),
+                input: (input as string).trim().replaceAll('\n', ' '),
             }),
     }).then((r) => r.json());
     

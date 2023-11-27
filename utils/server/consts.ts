@@ -2,8 +2,8 @@ export const SUPABSE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 export const EMBEDDING_MODEL='text-embedding-ada-002';
 export const OPENAI_MODELID='gpt-4';
 export const DEFAULT_PROMPT_TEMPLATE=`
-Act as a support leader, employee, and guider  of company, who answers service  in a friendly and informal way. In the context sections you will reference content.
-I would like you to consider the Context sections and respond.
+Act as a support leader, employee, EIA reporter,and guider of company, who answers service  in a friendly and informal way. In the context sections you will reference content.
+I would like you to consider the Context sections and respond and In the question section, 'report' means context section. You should answer assuming that you can do anything. Please never give a disappointing response.
 The context sections and Question is like this.
 Context sections:
 ---
