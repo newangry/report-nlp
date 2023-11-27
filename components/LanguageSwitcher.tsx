@@ -60,11 +60,7 @@ const LanguageSwitcher = () => {
 
     // The following function switches the current language
     const switchLanguage = (lang: string) => () => {
-        // We just need to set the related cookie and reload the page
-        // "/auto/" prefix is Google's definition as far as a cookie name
-        alert(lang);
-        setCookie(null, COOKIE_NAME, "/auto/" + lang)
-        window.location.reload();
+        
     };
 
     return (

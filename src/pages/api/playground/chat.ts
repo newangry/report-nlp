@@ -23,19 +23,24 @@ export default async function handler(
     res: any
 ) {
     const quires:string[] = await loadQueries();
-    let promises:any = [];
-    for(let k=0; k<quires.length; k++){
-        promises.push(getAnswer(quires[k]));
-    }
-    res.status(200).json(quires);
-    // res.status(200).json(quires);
-    // const stream = OpenAIStream(response, {
-    //     async onCompletion(completion) {
-
-    //     }
-    // })
-    // return new StreamingTextResponse(stream)
-    
+    quires.push("can you suggest similar international EIA reports for Service Corridors like this report?");
+    let data: any = [];
+    for(let k=0; k<quires.length; k+=10){
+        let promises:any = [];
+        for(let j=k; j<k+10; j++) {
+            if(j>=quires.length-1) {
+                break;
+            }
+            promises.push(getAnswer(quires[j]));
+        }
+        const result = await Promise.all(promises);
+        result.map((item) => {
+            if(item.answer != "") {
+                data.push(item)
+            }
+        })
+    }  
+    res.status(200).json(data);
 }
 
 const loadQueries = async () => {
@@ -57,11 +62,8 @@ const getAnswer = async (query: string) => {
     const matched_data = await supabaseAdmin.rpc("matched_sections", {
         embedding: embedding_data.embedding.data[0].embedding,
         match_threshold: 0.76,
-        match_count: 25,
+        match_count: 15,
     });
-
-    console.log(matched_data);
-
     let context = "";
     for (let k = 0; k < matched_data.data.length; k++) {
         context += matched_data.data[k].text
@@ -86,7 +88,11 @@ const getAnswer = async (query: string) => {
     })
 
     const data = (await response.json())
-    console.log("-----------Response-------------------");
-    console.log(data)
-    return data.choices;
+    if(data.choices){
+        console.log(data);
+        return {query, answer: data.choices[0].message.content};
+    } else {
+        console.log(data);
+        return {query, answer:''}
+    }
 }

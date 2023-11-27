@@ -15,13 +15,11 @@ const Index = () => {
     const [query, setQuery] = useState<string>('');
     const [isLoad, setIsLoad] = useState<boolean>(false)
     const [files, setFiles] = useState<String[]>([])
+    const [loadingData, setLoadingData] = useState<boolean>(false);
     const [answers, setAnswers] = useState<{
         query: string,
         answer: string
     }[]>([]);
-
-
-
     const { messages, append, setMessages, reload, isLoading } = useChat({
         api: '/api/playground/chat', initialInput: 'test',
         body: {
@@ -99,6 +97,7 @@ const Index = () => {
     }
 
     const generateAnswer = async () => {
+        setLoadingData(true)
         const res = await fetch('/api/playground/chat', {
             method: "POST",
             headers: {
@@ -111,6 +110,7 @@ const Index = () => {
             const data = await res.json();
             setAnswers(data);
         }
+        setLoadingData(false)
     }
 
     return (
@@ -159,7 +159,9 @@ const Index = () => {
                                     </Text>
                                 </Flex>
                             </Dropzone>
-                            <Button color="green" onClick={() => {
+                            <Button color="green" 
+                            disabled={loadingData}
+                            onClick={() => {
                                 generateAnswer()
                             }}>
                                 Generate Answer!
@@ -197,6 +199,7 @@ const Index = () => {
                 </Grid.Col>
                 <Grid.Col md={9} lg={9} sm={12}>
                     {
+                        loadingData?<Flex align={'center'} justify={'center'}><Loader /></Flex>:
                         answers.length == 0 ?
                             <Box>
                                 <Text align="center" size={"xl"}>
@@ -214,8 +217,14 @@ const Index = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <td width={'50%'}>123</td>
-                                    <td width={'50%'}>123</td>
+                                    {
+                                        answers.map((item) => 
+                                            <tr>
+                                                <td width={'50%'}>{item.query}</td>
+                                                <td width={'50%'}>{item.answer}</td>
+                                            </tr>
+                                        )
+                                    }
                                 </tbody>
                             </Table>
                     }
