@@ -1,7 +1,7 @@
 {
   "name": "basic-next-app",
-  "engines" : { 
-    "node" : ">=20.0.0"
+  "engines": {
+    "node": ">=20.0.0"
   },
   "version": "0.1.0",
   "private": true,
@@ -12,13 +12,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
     "@floating-ui/react": "^0.26.1",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@mantine/core": "^6.0.19",
     "@mantine/dropzone": "^6.0.19",
     "@mantine/form": "^6.0.19",
-    "@mantine/hooks": "^6.0.19",    
+    "@mantine/hooks": "^6.0.19",
     "@mantine/notifications": "^6.0.19",
     "@nanostores/react": "github:ai/react",
     "@supabase/auth-helpers-nextjs": "^0.7.4",
