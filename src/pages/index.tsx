@@ -99,6 +99,7 @@ const Index = () => {
     const generateAnswer = async () => {
         setLoadingData(true)
         let res = await fetch('/api/playground/get_quries');
+        const data:any = []
         if(res.status == 200) {
             const quires = await res.json();
             for(let k=0; k<quires.length; k+=10){
@@ -112,13 +113,12 @@ const Index = () => {
                 const result = await Promise.all(promises);
                 result.map((item) => {
                     if(item && item.answer != "") {
-                        let _answers = JSON.parse(JSON.stringify(answers));
-                        _answers.push(item);
-                        setAnswers(_answers);
+                        data.push(item);
                     }
                 })
             } 
         }
+        setAnswers(data);
         setLoadingData(false)
     }
 

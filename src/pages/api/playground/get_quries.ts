@@ -18,6 +18,5 @@ const loadQueries = async () => {
             }
         }
     }
-    quires.push("can you suggest similar international EIA reports for Service Corridors like this report?");
     return quires;
 }
