@@ -25,9 +25,9 @@ export default async function handler(
     const quires:string[] = await loadQueries();
     quires.push("can you suggest similar international EIA reports for Service Corridors like this report?");
     let data: any = [];
-    for(let k=0; k<quires.length; k+=10){
+    for(let k=0; k<quires.length; k+=5){
         let promises:any = [];
-        for(let j=k; j<k+10; j++) {
+        for(let j=k; j<k+5; j++) {
             if(j>=quires.length-1) {
                 break;
             }
