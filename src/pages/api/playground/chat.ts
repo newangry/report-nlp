@@ -23,7 +23,7 @@ export default async function handler(
     res: any
 ) {
     const query = req.body.query;
-    const result = getAnswer(query);
+    const result = await getAnswer(query);
     res.status(200).json(result);
 }   
 
