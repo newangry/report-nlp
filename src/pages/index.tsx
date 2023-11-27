@@ -39,7 +39,7 @@ const Index = () => {
             "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
         );
         document.body.appendChild(addScript);
-        (window  as any).googleTranslateElementInit = googleTranslateElementInit;
+        (window as any).googleTranslateElementInit = googleTranslateElementInit;
     }
 
     const googleTranslateElementInit = () => {
@@ -96,6 +96,21 @@ const Index = () => {
         setIsLoad(false);
     }
 
+    const generateAnswer = async () => {
+        const res = await fetch('/api/playground/chat', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+            }),
+        })
+        if(res.status == 200) {
+            const data = await res.json();
+            setAnswers(data);
+        }
+    }
+
     return (
         <Box p={20}>
             <Grid gutter={50}>
@@ -136,7 +151,9 @@ const Index = () => {
                                     </Text>
                                 </Flex>
                             </Dropzone>
-                            <Button color="green">
+                            <Button color="green" onClick={() => {
+                                generateAnswer()
+                            }}>
                                 Generate Answer!
                             </Button>
                         </Flex>

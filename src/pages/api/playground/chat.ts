@@ -22,8 +22,11 @@ export default async function handler(
     req: any,
     res: any
 ) {
-    const quires = await loadQueries();
-    console.log(quires);
+    const quires:string[] = await loadQueries();
+    let promises:any = [];
+    for(let k=0; k<quires.length; k++){
+        promises.push(getAnswer(quires[k]));
+    }
     res.status(200).json(quires);
     // res.status(200).json(quires);
     // const stream = OpenAIStream(response, {
@@ -32,6 +35,7 @@ export default async function handler(
     //     }
     // })
     // return new StreamingTextResponse(stream)
+    
 }
 
 const loadQueries = async () => {
