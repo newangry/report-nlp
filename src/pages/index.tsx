@@ -327,8 +327,8 @@ const Index = () => {
             <Modal opened={opened} onClose={() =>{setOpened(false)}} title={<Text color="green">{selAnswer.text}</Text>} size={'lg'}>
                 <Flex direction={'column'} gap={20}>
                     {
-                        selAnswer.matched_arr.map((item) =>
-                            <Text >
+                        selAnswer.matched_arr.map((item:any, key:number) =>
+                            <Text key={key}>
                                 ...{item}...
                             </Text>
                         )
