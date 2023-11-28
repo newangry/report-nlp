@@ -19,8 +19,8 @@ const Index = () => {
     const [answers, setAnswers] = useState<any>([]);
     const [opened, setOpened] = useState<boolean>(false);
     const [selAnswer, setSelAnswer] = useState<any>({
-        text:'',
-        matched_arr:[]
+        text: '',
+        matched_arr: []
     })
     const { messages, append, setMessages, reload, isLoading } = useChat({
         api: '/api/playground/chat', initialInput: 'test',
@@ -189,11 +189,16 @@ const Index = () => {
             <Flex justify={'space-between'} align={'center'} p={15} sx={(theme) => ({
                 borderBottom: `1px solid #dbd7d7`
             })}>
-                <Flex align={'center'}>
+                <Flex align={'center'} >
                     <Image src='/logo.jpg' alt="" width={200} />
-                    <Text size={25}>
-                        ESIA Reports Automatic Assessment Solution
-                    </Text>
+                    <Box>
+                        <Text size={25}>
+                            ESIA Reports Automatic Assessment Solution
+                        </Text>
+                        <Text size={25} align="right">
+                            النظام الالي لمراجعة تقارير تقييم الاثر البيئي والاجتماعي
+                        </Text>
+                    </Box>
                 </Flex>
             </Flex>
             <Grid gutter={50} p={20}>
@@ -324,10 +329,10 @@ const Index = () => {
                     </Box>
                 </Grid.Col>
             </Grid>
-            <Modal opened={opened} onClose={() =>{setOpened(false)}} title={<Text color="green">{selAnswer.text}</Text>} size={'lg'}>
+            <Modal opened={opened} onClose={() => { setOpened(false) }} title={<Text color="green">{selAnswer.text}</Text>} size={'lg'}>
                 <Flex direction={'column'} gap={20}>
                     {
-                        selAnswer.matched_arr.map((item:any, key:number) =>
+                        selAnswer.matched_arr.map((item: any, key: number) =>
                             <Text key={key}>
                                 ...{item}...
                             </Text>
