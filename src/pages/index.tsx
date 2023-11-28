@@ -1,5 +1,5 @@
 import { getBrands } from "@/utils/app/global";
-import { Box, Button, Flex, Grid, List, Loader, Table, Text, TextInput, Textarea, ThemeIcon, rem, Image } from "@mantine/core";
+import { Box, Button, Flex, Grid, List, Loader, Table, Text, TextInput, Textarea, ThemeIcon, rem, Image, Modal, ModalBase } from "@mantine/core";
 import { useUser } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -16,10 +16,12 @@ const Index = () => {
     const [isLoad, setIsLoad] = useState<boolean>(false)
     const [files, setFiles] = useState<String[]>([])
     const [loadingData, setLoadingData] = useState<boolean>(false);
-    const [answers, setAnswers] = useState<{
-        query: string,
-        answer: string
-    }[]>([]);
+    const [answers, setAnswers] = useState<any>([]);
+    const [opened, setOpened] = useState<boolean>(false);
+    const [selAnswer, setSelAnswer] = useState<any>({
+        text:'',
+        matched_arr:[]
+    })
     const { messages, append, setMessages, reload, isLoading } = useChat({
         api: '/api/playground/chat', initialInput: 'test',
         body: {
@@ -99,30 +101,67 @@ const Index = () => {
     const generateAnswer = async () => {
         setLoadingData(true)
         let res = await fetch('/api/playground/get_quries');
-        const data:any = []
-        if(res.status == 200) {
-            const quires = await res.json();
-            for(let k=0; k<quires.length; k+=10){
-                let promises:any = [];
-                for(let j=k; j<k+10; j++) {
-                    if(j>=quires.length-1) {
+        let excel: any = [];
+        let after_excel: any = [];
+        const data: any = [];
+        if (res.status == 200) {
+            excel = await res.json();
+            after_excel = JSON.parse(JSON.stringify(excel));
+            console.log("----After Excel----")
+            console.log(after_excel)
+            const quires: any = [];
+            excel.map((item: any) => {
+                if (!item.is_header) {
+                    quires.push(item)
+                }
+            })
+            console.log("____quires-------")
+            console.log(quires);
+            for (let k = 0; k < quires.length; k += 10) {
+                let promises: any = [];
+                for (let j = k; j < k + 10; j++) {
+                    if (j >= quires.length) {
                         break;
                     }
-                    promises.push(getAnswer(quires[j]));
+                    promises.push(getAnswer(quires[j].text));
+                    console.log(quires[j].text)
                 }
                 const result = await Promise.all(promises);
-                result.map((item) => {
-                    if(item && item.answer != "") {
-                        data.push(item);
+                result.map((item_1) => {
+                    if (item_1 && item_1.answer != "") {
+                        data.push(item_1);
                     }
                 })
-            } 
+            }
         }
-        setAnswers(data);
+
+        console.log("------Data---------")
+        console.log(data);
+        console.log(console.log(after_excel));
+        data.map((item__: any) => {
+            let index = 0;
+            for (let k = 0; k < after_excel.length; k++) {
+                if (after_excel[k].text == item__.query) {
+                    index = k;
+                }
+            }
+            after_excel[index]['answer'] = item__.answer;
+            after_excel[index]['matched_arr'] = item__.matched_arr;
+        })
+
+        // const excel_ = excel.filter((item: any) => item.answer !="" || item.is_header);
+
+        const excel_: any = [];
+        after_excel.map((item_: any) => {
+            if (item_.answer != "" || item_.is_header) {
+                excel_.push(item_);
+            }
+        })
+        setAnswers(excel_);
         setLoadingData(false)
     }
 
-    const getAnswer = async(query: string) => {
+    const getAnswer = async (query: string) => {
         try {
             const res = await fetch('/api/playground/chat', {
                 method: "POST",
@@ -133,14 +172,14 @@ const Index = () => {
                     query
                 }),
             })
-    
+
             if (res.status == 200) {
                 const data = await res.json();
                 return data;
             } else {
                 return false;
             }
-        }catch(e){
+        } catch (e) {
             return false;
         }
     }
@@ -151,12 +190,11 @@ const Index = () => {
                 borderBottom: `1px solid #dbd7d7`
             })}>
                 <Flex align={'center'}>
-                    <Image src='/logo.jpg' alt="" width={200}/>
+                    <Image src='/logo.jpg' alt="" width={200} />
                     <Text size={25}>
                         ESIA Reports Automatic Assessment Solution
                     </Text>
                 </Flex>
-                <LanguageSwitcher />
             </Flex>
             <Grid gutter={50} p={20}>
                 <Grid.Col md={3} lg={3} sm={12}>
@@ -205,9 +243,7 @@ const Index = () => {
                             </Button>
                         </Flex>
                         <Flex justify={'center'} gap={20} direction={'column'} >
-                            <Text size={20} color="blue">
-                                Uploded File List
-                            </Text>
+
                             {
                                 isLoad ? <Flex align={'center'} justify={'center'} ><Loader /></Flex> :
                                     files.length == 0 ?
@@ -235,46 +271,70 @@ const Index = () => {
                 </Grid.Col>
                 <Grid.Col md={9} lg={9} sm={12}>
                     {
-                        
-                            answers.length == 0 ?
-                                <Box>
-                                    <Text align="center" size={"xl"}>
-                                        No generated Answer
-                                    </Text>
-                                    <Text align="center" size={'sm'} color="green">
-                                        {`Please click "Generate Answer!" button`}
-                                    </Text>
-                                </Box> :
-                                <Table>
-                                    <thead>
-                                        <tr>
-                                            <th>Question</th>
-                                            <th>Answer</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            answers.map((item, key) =>
-                                                <tr key={key}>
-                                                    <td width={'50%'}>{item.query}</td>
-                                                    <td width={'50%'}>
-                                                        <ChatMessage
-                                                            message={item.answer}
-                                                        />
-                                                    </td>
-                                                </tr>
-                                            )
-                                        }
-                                    </tbody>
-                                </Table>
+
+                        answers.length == 0 ?
+                            <Box>
+                                <Text align="center" size={"xl"}>
+                                    No generated Answer
+                                </Text>
+                                <Text align="center" size={'sm'} color="green">
+                                    {`Please click "Generate Answer!" button`}
+                                </Text>
+                            </Box> :
+                            <Table>
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Question</th>
+                                        <th>Answer</th>
+                                        <th>Reference</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        answers.map((item: any, key: number) =>
+                                            <tr
+                                                key={key}
+                                                style={{
+                                                    background: item.is_header ? 'green' : 'white',
+                                                    color: item.is_header ? 'white' : 'black'
+                                                }}
+                                            >
+                                                <td width={'7%'}>{item.no}</td>
+                                                <td width={'44%'}>{item.text}</td>
+                                                <td width={'44%'}>
+                                                    <ChatMessage
+                                                        message={item.answer}
+                                                    />
+                                                </td>
+                                                <td width={'7%'} style={{ color: 'green' }} onClick={() => {
+                                                    setOpened(true)
+                                                    setSelAnswer(item);
+                                                }}>Detail</td>
+                                            </tr>
+                                        )
+                                    }
+                                </tbody>
+                            </Table>
                     }
                     <Box mt={'20px'}>
                         {
-                            loadingData ? <Flex align={'center'} justify={'center'}><Loader /></Flex>:<></>
+                            loadingData ? <Flex align={'center'} justify={'center'}><Loader /></Flex> : <></>
                         }
                     </Box>
                 </Grid.Col>
             </Grid>
+            <Modal opened={opened} onClose={() =>{setOpened(false)}} title={<Text color="green">{selAnswer.text}</Text>} size={'lg'}>
+                <Flex direction={'column'} gap={20}>
+                    {
+                        selAnswer.matched_arr.map((item) =>
+                            <Text >
+                                ...{item}...
+                            </Text>
+                        )
+                    }
+                </Flex>
+            </Modal>
         </Box>
     )
 }

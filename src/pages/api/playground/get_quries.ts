@@ -10,14 +10,34 @@ export default async function handler(
 
 const loadQueries = async () => {
     const data = await readExcel('./Checklist.xlsx');
-    const quires: string[] = [];
+    const quires: any= [];
     for (let i in data) {
-        for (let j in data[i]) {
-            if(data[i][j]) {
-                quires.push(data[i][j] as string);
+
+        let no= "";
+        let text="";            
+        no = data[i]["0"].toString();
+        text = data[i]["1"].toString();
+        
+        if(no == "#"){
+            continue;
+        }
+
+        const splited_no = no.split(".");
+        let is_header = false;
+        if(splited_no.length == 1) {
+            is_header = true;
+        } else {
+            if(splited_no[1].length == 1) {
+                is_header = true;
             }
         }
+        
+        quires.push({
+            no,
+            text,
+            is_header,
+            answer:''
+        })
     }
-    quires.push("can you suggest similar international EIA reports for Service Corridors like this report?");
     return quires;
 }

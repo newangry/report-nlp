@@ -4,4 +4,4 @@ window.__GOOGLE_TRANSLATION_CONFIG__ = {
         { title: "Arabic", name: "ar" }
     ],
     defaultLanguage: "en",
-};
+};  

@@ -22,9 +22,14 @@ export default async function handler(
     req: any,
     res: any
 ) {
-    const query = req.body.query;
-    const result = await getAnswer(query);
-    res.status(200).json(result);
+    try{
+        const query = req.body.query;
+        const result = await getAnswer(query);
+        res.status(200).json(result);
+    }catch(e){
+        res.status(201).json({})
+    }
+    
 }   
 
 const getAnswer = async (query: string) => {
@@ -32,11 +37,13 @@ const getAnswer = async (query: string) => {
     const matched_data = await supabaseAdmin.rpc("matched_sections", {
         embedding: embedding_data.embedding.data[0].embedding,
         match_threshold: 0.76,
-        match_count: 15,
+        match_count: 25,
     });
     let context = "";
+    let matched_arr: string[] = [];
     for (let k = 0; k < matched_data.data.length; k++) {
-        context += matched_data.data[k].text
+        context += matched_data.data[k].text;
+        matched_arr.push(matched_data.data[k].text);
     }
 
     let full_prompt = DEFAULT_PROMPT_TEMPLATE
@@ -59,10 +66,9 @@ const getAnswer = async (query: string) => {
 
     const data = (await response.json())
     if(data.choices){
-        console.log(data);
-        return {query, answer: data.choices[0].message.content};
+        return {query, answer: data.choices[0].message.content, matched_arr};
     } else {
         console.log(data);
-        return {query, answer:''}
+        return {query, answer:'', matched_arr}
     }
 }

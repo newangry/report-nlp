@@ -1,9 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import formidable from "formidable";
-import FormData from "form-data";
 import fs from 'fs';
-import PDFParse from 'pdf-parse';
 import PdfParse from 'pdf-parse';
 
 export default async function handler(
@@ -25,6 +23,7 @@ export default async function handler(
     try {
         const { fields, files }: any = await formData;
         let data = fs.readFileSync(files.file[0].filepath);
+        
         const text = (await PdfParse(data)).text;
     
         res.status(200).send({ text: text.replace(/\n/, '') });
@@ -34,8 +33,6 @@ export default async function handler(
         return;
     }
 }
-
-
 
 
 export const config = {
